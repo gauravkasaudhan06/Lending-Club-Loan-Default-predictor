@@ -1,0 +1,48 @@
+# Lending Club Loan Default Predictor Configuration
+
+paths:
+  raw_data_path: "data/raw/lending_club_loan_two.csv"
+  processed_train_path: "data/processed/train_preprocessed.csv"
+  processed_test_path: "data/processed/test_preprocessed.csv"
+  models_dir: "models"
+  plots_dir: "plots"
+
+preprocessing:
+  test_size: 0.33
+  random_state: 42
+  columns_to_drop:
+    - "title"
+    - "emp_title"
+    - "emp_length"
+    - "grade"
+    - "address"
+    - "issue_d"
+  dummies:
+    - "sub_grade"
+    - "verification_status"
+    - "purpose"
+    - "initial_list_status"
+    - "application_type"
+    - "home_ownership"
+  outliers:
+    max_annual_inc: 250000
+    max_dti: 50
+    max_open_acc: 40
+    max_total_acc: 80
+    max_revol_util: 120
+    max_revol_bal: 250000
+
+models:
+  ann:
+    hidden_units: [150, 150, 150]
+    dropout_rates: [0.1, 0.0, 0.1, 0.0]
+    learning_rate: 0.001
+    epochs: 20
+    batch_size: 32
+  xgboost:
+    use_label_encoder: false
+    eval_metric: "logloss"
+    random_state: 42
+  random_forest:
+    n_estimators: 100
+    random_state: 42
