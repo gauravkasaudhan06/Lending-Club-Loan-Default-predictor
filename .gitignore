@@ -37,7 +37,10 @@ env/
 # Project Data and Models (Exclude large CSVs and weights)
 data/raw/
 data/processed/
-models/
+models/*
+!models/xgb_model.json
+!models/scaler.pkl
+!models/model_columns.pkl
 plots/
 
 # Temp / Scratch files

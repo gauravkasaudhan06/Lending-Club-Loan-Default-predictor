@@ -1,11 +1,6 @@
 numpy
 pandas
-seaborn
-scipy
-matplotlib
-hvplot
 scikit-learn
 xgboost
-tensorflow
 pyyaml
 flask
