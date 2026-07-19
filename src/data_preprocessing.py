@@ -3,9 +3,9 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
-def load_data(file_path):
+def load_data(file_path, nrows=None):
     """Load the raw csv dataset."""
-    return pd.read_csv(file_path)
+    return pd.read_csv(file_path, nrows=nrows)
 
 def clean_data(df, config):
     """
@@ -14,7 +14,17 @@ def clean_data(df, config):
     - Convert columns to appropriate types and categories
     - Encode categorical variables
     """
-    df = df.copy()
+    # 0. Keep only the relevant columns to avoid dropping all rows due to NaNs in other columns
+    relevant_cols = [
+        'loan_amnt', 'term', 'int_rate', 'installment', 'grade', 'sub_grade',
+        'emp_title', 'emp_length', 'home_ownership', 'annual_inc',
+        'verification_status', 'issue_d', 'loan_status', 'purpose', 'title',
+        'zip_code', 'addr_state', 'dti', 'earliest_cr_line', 'open_acc',
+        'pub_rec', 'revol_bal', 'revol_util', 'total_acc', 'initial_list_status',
+        'application_type', 'mort_acc', 'pub_rec_bankruptcies', 'address'
+    ]
+    existing_relevant_cols = [col for col in relevant_cols if col in df.columns]
+    df = df[existing_relevant_cols].copy()
     
     # 1. Map target column (loan_status) to binary
     if 'loan_status' in df.columns:

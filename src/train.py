@@ -46,7 +46,8 @@ def run_training_pipeline(config_path="config/config.yaml"):
         )
         
     print(f"Step 2: Reading dataset from {raw_data_path}...")
-    raw_df = load_data(raw_data_path)
+    max_rows = config['preprocessing'].get('max_rows', None)
+    raw_df = load_data(raw_data_path, nrows=max_rows)
     print(f"Dataset loaded. Initial shape: {raw_df.shape}")
     
     print("Step 3: Cleaning and preprocessing dataset...")
