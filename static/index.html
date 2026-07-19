@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LendingClub Loan Default Predictor</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-glowing-dots"></div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>🏦 LendingClub <span>Risk Analytics</span></h1>
+            <p>Predict loan default probability instantly using advanced Machine Learning (XGBoost)</p>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Left Panel: Input Form -->
+            <section class="card glass form-card">
+                <h2 class="card-title">Applicant Profile</h2>
+                <form id="predictor-form">
+                    <div class="form-grid">
+                        <!-- Loan Details -->
+                        <div class="form-section">
+                            <h3>Loan Details</h3>
+                            
+                            <div class="form-group">
+                                <label for="loan_amnt">Loan Amount ($)</label>
+                                <input type="number" id="loan_amnt" min="1000" max="40000" value="15000" required>
+                                <span class="input-desc">Range: $1,000 - $40,000</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="term">Term (Months)</label>
+                                <select id="term">
+                                    <option value="36" selected>36 Months</option>
+                                    <option value="60">60 Months</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="int_rate">Interest Rate (%)</label>
+                                <div class="slider-container">
+                                    <input type="range" id="int_rate" min="5.0" max="30.0" step="0.1" value="12.5">
+                                    <span class="slider-value" id="int_rate_val">12.5%</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="installment">Monthly Installment ($)</label>
+                                <input type="number" id="installment" min="30" max="1500" value="450" required>
+                            </div>
+                        </div>
+
+                        <!-- Financial Position -->
+                        <div class="form-section">
+                            <h3>Financial Position</h3>
+
+                            <div class="form-group">
+                                <label for="annual_inc">Annual Income ($)</label>
+                                <input type="number" id="annual_inc" min="10000" max="1000000" value="65000" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dti">Debt-to-Income (DTI) Ratio</label>
+                                <div class="slider-container">
+                                    <input type="range" id="dti" min="0.0" max="50.0" step="0.1" value="15.0">
+                                    <span class="slider-value" id="dti_val">15.0</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="home_ownership">Home Ownership</label>
+                                <select id="home_ownership">
+                                    <option value="MORTGAGE" selected>Mortgage</option>
+                                    <option value="RENT">Rent</option>
+                                    <option value="OWN">Own</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Credit History -->
+                        <div class="form-section">
+                            <h3>Credit History</h3>
+
+                            <div class="form-group">
+                                <label for="earliest_cr_line">Earliest Credit Line (Year)</label>
+                                <input type="number" id="earliest_cr_line" min="1950" max="2020" value="2002" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="open_acc">Open Credit Lines</label>
+                                <input type="number" id="open_acc" min="1" max="40" value="10" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="total_acc">Total Credit Lines</label>
+                                <input type="number" id="total_acc" min="2" max="80" value="24" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="mort_acc">Mortgage Accounts</label>
+                                <select id="mort_acc">
+                                    <option value="0">None</option>
+                                    <option value="1" selected>1 or More</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Categorical Extras -->
+                        <div class="form-section">
+                            <h3>Lending Category</h3>
+
+                            <div class="form-group">
+                                <label for="sub_grade">LC Subgrade</label>
+                                <select id="sub_grade">
+                                    <option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option>
+                                    <option value="B1" selected>B1</option><option value="B2">B2</option><option value="B3">B3</option><option value="B4">B4</option><option value="B5">B5</option>
+                                    <option value="C1">C1</option><option value="C2">C2</option><option value="C3">C3</option><option value="C4">C4</option><option value="C5">C5</option>
+                                    <option value="D1">D1</option><option value="D2">D2</option><option value="D3">D3</option><option value="D4">D4</option><option value="D5">D5</option>
+                                    <option value="E1">E1</option><option value="E2">E2</option><option value="E3">E3</option><option value="E4">E4</option><option value="E5">E5</option>
+                                    <option value="F1">F1</option><option value="F2">F2</option><option value="F3">F3</option><option value="F4">F4</option><option value="F5">F5</option>
+                                    <option value="G1">G1</option><option value="G2">G2</option><option value="G3">G3</option><option value="G4">G4</option><option value="G5">G5</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="purpose">Loan Purpose</label>
+                                <select id="purpose">
+                                    <option value="debt_consolidation" selected>Debt Consolidation</option>
+                                    <option value="credit_card">Credit Card</option>
+                                    <option value="home_improvement">Home Improvement</option>
+                                    <option value="major_purchase">Major Purchase</option>
+                                    <option value="small_business">Small Business</option>
+                                    <option value="car">Car</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="verification_status">Verification Status</label>
+                                <select id="verification_status">
+                                    <option value="Not Verified" selected>Not Verified</option>
+                                    <option value="Source Verified">Source Verified</option>
+                                    <option value="Verified">Verified</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="zip_code">Zip Code (First 3 digits)</label>
+                                <select id="zip_code">
+                                    <option value="30723" selected>307 (Georgia)</option>
+                                    <option value="22690">226 (Virginia)</option>
+                                    <option value="48052">480 (Michigan)</option>
+                                    <option value="70466">704 (Louisiana)</option>
+                                    <option value="00812">008 (Virgin Islands)</option>
+                                    <option value="93700">937 (California)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden Fields with Default mappings -->
+                    <input type="hidden" id="pub_rec" value="0">
+                    <input type="hidden" id="pub_rec_bankruptcies" value="0">
+                    <input type="hidden" id="revol_bal" value="10000">
+                    <input type="hidden" id="revol_util" value="50">
+                    <input type="hidden" id="initial_list_status" value="w">
+                    <input type="hidden" id="application_type" value="INDIVIDUAL">
+
+                    <button type="submit" class="btn-primary" id="submit-btn">
+                        <span>Evaluate Default Risk</span>
+                        <div class="loader" id="btn-loader"></div>
+                    </button>
+                </form>
+            </web>
+            
+            <!-- Right Panel: Prediction Results -->
+            <section class="card glass result-card" id="result-section">
+                <div class="result-placeholder" id="placeholder-content">
+                    <div class="placeholder-icon">🏦</div>
+                    <h3>Waiting for Evaluation</h3>
+                    <p>Fill out the applicant profile on the left and click "Evaluate Default Risk" to view probability scores.</p>
+                </div>
+
+                <div class="result-content hidden" id="real-content">
+                    <h2 class="card-title">Risk Assessment Report</h2>
+                    
+                    <!-- Circular Risk Gauge -->
+                    <div class="gauge-wrapper">
+                        <div class="circular-progress" id="progress-circle">
+                            <div class="value-container" id="risk-val">0%</div>
+                        </div>
+                        <span class="gauge-label">Probability of Default</span>
+                    </div>
+
+                    <!-- Recommendation Banner -->
+                    <div class="recommendation-banner" id="rec-banner">
+                        <span class="rec-title" id="rec-title">Approved (Low Risk)</span>
+                        <p class="rec-desc" id="rec-desc">The model indicates a high probability of successful repayment.</p>
+                    </div>
+
+                    <!-- Details Table -->
+                    <div class="details-list">
+                        <div class="detail-item">
+                            <span class="detail-label">Decision Recommendation</span>
+                            <span class="detail-value highlight" id="detail-rec">Low Risk Approval</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Default Probability Score</span>
+                            <span class="detail-value" id="detail-prob">0.05</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Repayment Probability Score</span>
+                            <span class="detail-value" id="detail-repay">0.95</span>
+                        </div>
+                    </div>
+                    
+                    <div class="disclaimer">
+                        *Disclaimer: This evaluation is generated by an XGBoost classification model trained on historical LendingClub dataset splits for academic purposes only.
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
