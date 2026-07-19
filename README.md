@@ -91,7 +91,7 @@ pip install -r requirements.txt
 
 ### 2. Dataset Setup
 
-1. Download the LendingClub dataset (`lending_club_loan_two.csv`) from [Kaggle](https://www.kaggle.com/datasets/wordsforthewise/lending-club).
+1. Download the LendingClub dataset (`lending_club_loan_two.csv`) from [Kaggle](https://www.kaggle.com/code/gauravkasaudhan/lending-club-loan-defaulters-prediction/input?select=lending_club_loan_two.csv).
 2. Create the data directories and place the file inside:
    ```bash
    mkdir -p data/raw
